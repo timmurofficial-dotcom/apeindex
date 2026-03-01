@@ -1,4 +1,5 @@
 {
+  "$schema": "https://mintlify.com/docs.json",
   "name": "ApeIndex",
   "logo": {
     "light": "/logo/light.svg",
@@ -6,73 +7,61 @@
   },
   "favicon": "/favicon.svg",
   "colors": {
-    "primary": "#6366F1",
-    "light": "#818CF8",
-    "dark": "#4338CA",
-    "anchors": {
-      "from": "#6366F1",
-      "to": "#8B5CF6"
+    "primary": "#6366F1"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Telegram Bot",
+        "href": "https://t.me/your_bot"
+      }
+    ],
+    "primary": {
+      "label": "Launch Terminal",
+      "href": "https://t.me/your_bot"
     }
   },
-  "topbarLinks": [
-    {
-      "name": "Telegram Bot",
-      "url": "https://t.me/your_bot"
-    }
-  ],
-  "topbarCtaButton": {
-    "name": "Launch Terminal",
-    "url": "https://t.me/your_bot"
-  },
-  "tabs": [
-    {
-      "name": "Documentation",
-      "url": "docs"
-    },
-    {
-      "name": "API Reference",
-      "url": "api-reference"
-    }
-  ],
   "navigation": [
     {
       "group": "Getting Started",
       "pages": [
-        "docs/getting-started/introduction",
-        "docs/getting-started/quickstart",
-        "docs/getting-started/setup"
+        "getting-started/introduction",
+        "getting-started/quickstart",
+        "getting-started/setup"
       ]
     },
     {
       "group": "Core Features",
       "pages": [
-        "docs/core/signal-detection",
-        "docs/core/signal-scoring",
-        "docs/core/whale-analysis",
-        "docs/core/position-management",
-        "docs/core/market-browser",
-        "docs/core/daily-digest"
+        "core/signal-detection",
+        "core/signal-scoring",
+        "core/whale-analysis",
+        "core/position-management",
+        "core/market-browser",
+        "core/daily-digest"
       ]
     },
     {
       "group": "Reference",
       "pages": [
-        "docs/reference/commands",
-        "docs/reference/trading-modes",
-        "docs/reference/risk-configuration"
+        "reference/commands",
+        "reference/trading-modes",
+        "reference/risk-configuration"
       ]
     },
     {
       "group": "Technical",
       "pages": [
-        "docs/advanced/architecture",
-        "docs/advanced/api-integration",
-        "docs/advanced/database-schema",
-        "docs/advanced/roadmap"
+        "advanced/architecture",
+        "advanced/api-integration",
+        "advanced/database-schema",
+        "advanced/roadmap"
       ]
     }
   ],
-  "footerSocials": {
-    "telegram": "https://t.me/your_channel"
+  "footer": {
+    "socials": {
+      "telegram": "https://t.me/your_channel"
+    }
   }
 }
