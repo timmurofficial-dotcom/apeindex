@@ -1,0 +1,57 @@
+---
+title: Signal Scoring
+description: "Every signal receives a composite score 1–100 before delivery."
+---
+
+## How Scoring Works
+
+Every signal receives a **composite score between 1 and 100** before it is delivered. The score is displayed in every notification as a visual progress bar alongside a qualitative label.
+
+```
+Score display in notification:
+████████░░  78/100  · Strong Signal
+```
+
+## Score Labels
+
+| Score Range | Label | Meaning |
+|-------------|-------|---------|
+| 85–100 | 🔥 **Exceptional** | Highest confidence — multiple confirming factors |
+| 70–84 | ✅ **Strong Signal** | High confidence, actionable |
+| 50–69 | ⚡ **Moderate** | Worth watching, consider sizing down |
+| 30–49 | ⚠️ **Weak Signal** | Low confidence, informational only |
+| 1–29 | ❄️ **Noise** | Below threshold for most traders |
+
+## Scoring Factors
+
+The composite score incorporates multiple factors depending on the pattern type:
+
+<AccordionGroup>
+  <Accordion title="Wallet conviction (Intersection Pattern)">
+    The number of followed wallets that have entered the same market increases the score. 2 wallets = baseline. 3+ wallets = significant boost.
+  </Accordion>
+  <Accordion title="Volume anomaly strength (Pre-News Pattern)">
+    Higher `v24h / v_total` ratios produce higher scores. A 10% ratio is the entry threshold; ratios above 25% approach maximum scores for this component.
+  </Accordion>
+  <Accordion title="Whale profile quality">
+    Signals tied to wallets with higher win rates and larger average trade sizes receive a score boost from the whale profile component.
+  </Accordion>
+  <Accordion title="Market liquidity">
+    Higher lifetime volume and tighter spreads contribute positively to the score.
+  </Accordion>
+  <Accordion title="Signal freshness">
+    Signals generated from very recent on-chain activity (under 30 minutes) score higher than signals based on older data.
+  </Accordion>
+</AccordionGroup>
+
+## Score in Notifications
+
+Every signal notification includes:
+
+- The visual bar `█████░░░░░`
+- Numeric score (e.g. `63/100`)
+- Qualitative label
+- The pattern that fired
+- Market question and suggested outcome
+
+Use the score to prioritise which signals to act on in Manual Mode, or set a minimum score threshold in Auto Mode settings.
