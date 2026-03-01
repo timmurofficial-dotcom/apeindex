@@ -1,0 +1,58 @@
+---
+title: Watchlist & Market Browser
+description: "Track specific markets and browse Polymarket directly from Telegram."
+---
+
+## Watchlist
+
+Add any market to your personal watchlist from three entry points:
+
+- **Signal notification** — via the "Add to Watchlist" button
+- **Market detail screen** — via the watchlist toggle button
+- **`/watchlist` command** — view and manage all tracked markets
+
+### Price Alerts
+
+The watchlist monitor runs **every 60 seconds**. When a market's current Yes price moves more than **10% relative to the price at time of addition**, an alert is sent with the old and new price and the direction of movement.
+
+```
+/watchlist          — View all watched markets
+/watchlist → Remove — Stop watching a market
+```
+
+## Market Browser
+
+The `/markets` command opens an inline browser with three entry points:
+
+<CardGroup cols={3}>
+  <Card title="Trending Markets" icon="fire">
+    Top markets by 24h volume. Only `acceptingOrders=true` markets are shown.
+  </Card>
+  <Card title="Category Browse" icon="grid">
+    Browse by: Geopolitics, Sports, Finance, Crypto, Up/Down, Esports, Weather, Other
+  </Card>
+  <Card title="Keyword Search" icon="magnifying-glass">
+    Free-text search passed to the Gamma API. Find any market by topic or question.
+  </Card>
+</CardGroup>
+
+### Market Detail Screen
+
+Every market detail screen shows:
+
+| Field | Description |
+|-------|-------------|
+| Yes / No prices | Decoded from `outcomePrices` field |
+| 24h volume | Trading activity in the last 24 hours |
+| Liquidity depth | Total liquidity available in the order book |
+| Polymarket link | Clickable link to the market on polymarket.com |
+| Add to Watchlist | One-tap watchlist toggle |
+| Enter Trade | Directly initiate a trade from the detail screen |
+
+## URL Resolution
+
+The terminal resolves Polymarket market URLs in the following priority order:
+
+1. `events[0].slug` — the event slug from the API response (most accurate)
+2. `market.slug` — the market-level slug from the Gamma API (fallback)
+3. Question-derived slug — generated from the market question text (last resort)

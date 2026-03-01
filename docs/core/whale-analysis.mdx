@@ -1,0 +1,64 @@
+---
+title: Whale Analysis
+description: "Inline wallet profiles derived from on-chain activity, computed on demand for every tracked wallet."
+---
+
+## Overview
+
+Every signal that originates from a tracked wallet includes an **inline whale profile** derived from the wallet's recent on-chain activity. The profile is computed on demand and **cached per wallet for 6 hours** to limit API calls.
+
+## Computed Fields
+
+| Field | Description |
+|-------|-------------|
+| **Win Rate** | Percentage of closed trades with positive P&L (requires API profit data) |
+| **Average Size** | Mean trade size in USD across the last 50 transactions |
+| **Top Category** | Dominant market category based on keyword analysis |
+| **Total Trades** | Count of on-chain activity records retrieved |
+
+<Note>
+  Win rate only populates when the Gamma API returns profit fields for the wallet. This is not always available for all wallets.
+</Note>
+
+## Category Classification
+
+Market questions are classified into **four categories** by keyword matching against a fixed vocabulary:
+
+<CardGroup cols={2}>
+  <Card title="🏛️ Politics" icon="landmark">
+    Keywords: trump, election, president, senate, democrat, republican
+  </Card>
+  <Card title="🏆 Sports" icon="trophy">
+    Keywords: nfl, nba, nhl, mlb, championship
+  </Card>
+  <Card title="₿ Crypto" icon="bitcoin-sign">
+    Keywords: bitcoin, ethereum, btc, eth, defi
+  </Card>
+  <Card title="🌍 Geopolitics" icon="globe">
+    Keywords: iran, russia, ukraine, china, war, nato
+  </Card>
+</CardGroup>
+
+The **Top Category** field shows where a whale concentrates their activity — useful for understanding whether a wallet specialises in a domain you trust.
+
+## Whale Exit Notifications
+
+<Warning>
+  This is one of the most important risk management features in the terminal.
+</Warning>
+
+When the terminal detects that a tracked whale has **reduced or closed a position** in a market where you are also long, an **exit notification is sent immediately** — regardless of whether your stop-loss or take-profit levels have been hit.
+
+This gives you the option to follow the whale out before the market moves against you.
+
+Exit notifications fire every 60 seconds (matching the position monitor cycle) and cannot be turned off independently — they are always active when monitoring is running.
+
+## Managing Followed Wallets
+
+```
+/wallets          — View all followed wallets
+/wallets → Add    — Add a new wallet address
+/wallets → Remove — Stop following a wallet
+```
+
+There is no hard limit on the number of wallets you can follow. However, the Intersection Pattern only checks the **10 most recently active** wallets each cycle for performance reasons.

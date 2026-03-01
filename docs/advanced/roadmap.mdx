@@ -1,0 +1,48 @@
+---
+title: Limitations & Roadmap
+description: "Current known limitations and planned features for v2.x."
+---
+
+## Current Limitations
+
+<AccordionGroup>
+  <Accordion title="CLOB execution requires a funded Polygon wallet">
+    Signals fire regardless of wallet status, but trade execution will fail without a funded Polygon wallet and valid CLOB API keys configured. Signals are still delivered and can be acted on manually on Polymarket.com.
+  </Accordion>
+  <Accordion title="Win rate data depends on Gamma API availability">
+    Win/loss attribution in whale profiles requires market resolution data from the Gamma API. This is not always available at signal time — win rate in whale analysis only populates when the API returns profit fields for the wallet.
+  </Accordion>
+  <Accordion title="Category classification is keyword-based">
+    Whale category classification uses fixed keyword matching, not semantic understanding. Edge cases exist for ambiguously worded market questions that don't contain recognisable keywords.
+  </Accordion>
+  <Accordion title="Single-node SQLite">
+    All data is stored in a local SQLite file. This is not suitable for multi-user horizontal scaling without migration to PostgreSQL.
+  </Accordion>
+</AccordionGroup>
+
+## Roadmap
+
+<CardGroup cols={2}>
+  <Card title="📈 Signal Backtesting" icon="clock-rotate-left">
+    Replay historical market data to compute per-pattern win rates. Know your edge before going live.
+  </Card>
+  <Card title="🔗 Market Correlation Engine" icon="diagram-project">
+    Surface related markets when a signal fires — trade the same event across multiple correlated questions.
+  </Card>
+  <Card title="✅ Resolution Tracking" icon="check-circle">
+    Automatically update `signal_history.resolved` when markets close, enabling accurate per-pattern win rate calculations.
+  </Card>
+  <Card title="🔀 Multi-Leg Strategies" icon="code-branch">
+    Combine two correlated markets in a single hedged trade to reduce directional risk.
+  </Card>
+  <Card title="🔔 Push Notification Webhooks" icon="webhook">
+    Outbound HTTP hooks for integrating signals with external systems, dashboards, or custom notification pipelines.
+  </Card>
+  <Card title="🐘 PostgreSQL Migration" icon="database">
+    Multi-user horizontal scaling support via PostgreSQL backend as an alternative to SQLite.
+  </Card>
+</CardGroup>
+
+---
+
+*ApeIndex · v2.0 · March 2026*
