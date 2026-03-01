@@ -1,0 +1,49 @@
+---
+title: Position Management
+description: "Real-time portfolio tracking with automatic stop-loss and take-profit execution."
+---
+
+## Portfolio View
+
+The `/portfolio` command renders all your open positions in real time. For each position the terminal fetches the current market price from the Polymarket API and displays:
+
+- Current price of the held outcome
+- Unrealised P&L in percentage and absolute USD
+- Configured stop-loss and take-profit levels
+- Total portfolio-level invested amount and aggregate P&L
+
+```
+/portfolio
+```
+
+## Stop Loss & Take Profit
+
+Immediately after a trade is executed, you are offered **four preset risk configurations**:
+
+| Config | Stop Loss | Take Profit |
+|--------|-----------|-------------|
+| Conservative | -10% | +20% |
+| Balanced | -15% | +30% |
+| Aggressive | -25% | +50% |
+| Custom | Set manually | Set manually |
+
+The background monitor checks all open positions **every 60 seconds**. When a price touches a configured level, the position is closed automatically via the CLOB API and you receive a notification with the exit price and final P&L.
+
+<Note>
+  You can update stop-loss and take-profit levels at any time from the position detail screen. The new levels take effect on the next monitor cycle.
+</Note>
+
+## Automatic Exit Logic
+
+```
+Every 60 seconds:
+  for each open position:
+    fetch current market price
+    if price <= stop_loss_level → close position, notify
+    if price >= take_profit_level → close position, notify
+    if whale_exit_detected → notify immediately
+```
+
+## Whale Exit Alerts
+
+When a tracked whale reduces or closes a position in a market you're also long, you receive an **immediate exit notification** — separate from the regular SL/TP monitor. See [Whale Analysis](/docs/core/whale-analysis) for details.

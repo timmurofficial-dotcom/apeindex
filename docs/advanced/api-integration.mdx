@@ -1,0 +1,67 @@
+---
+title: API Integration
+description: "Polymarket Gamma API and CLOB API integration details."
+---
+
+## Polymarket Gamma API
+
+The Gamma API (`gamma-api.polymarket.com`) is used for market discovery, market data lookup, and user activity retrieval.
+
+### Market Filters
+
+All market search queries apply the following filters to guarantee only tradeable markets are returned:
+
+| Filter | Value | Purpose |
+|--------|-------|---------|
+| `active` | `true` | Excludes administratively inactive markets |
+| `closed` | `false` | Excludes markets past their end date |
+| `acceptingOrders` | `true` | Confirms live order-book status |
+
+### Response Parsing
+
+Market data from the Gamma API includes `outcomes` and `outcomePrices` as **JSON-encoded strings** (e.g. `'["Yes","No"]'`). The terminal decodes these fields automatically via a `_get_outcomes()` helper that handles both:
+
+- JSON-string format (Gamma API)
+- Dict-array format (CLOB API)
+
+### URL Resolution Priority
+
+Polymarket event URLs follow `polymarket.com/event/{event-slug}`. Resolution order:
+
+1. `events[0].slug` — most accurate
+2. `market.slug` — fallback
+3. Question-derived slug — last resort
+
+## CLOB API
+
+Order placement and position management uses the Polymarket CLOB API (`clob.polymarket.com`).
+
+<Warning>
+  Authenticated requests require an API key pair generated from the user's Polygon wallet. Keys are stored **AES-encrypted** in the `users` table and decrypted only at time of order execution.
+</Warning>
+
+### Authentication Flow
+
+```python
+# Simplified flow
+keys = decrypt(user.encrypted_api_keys)
+client = ClobClient(
+    host="clob.polymarket.com",
+    key=keys.api_key,
+    secret=keys.api_secret,
+    chain_id=137  # Polygon
+)
+client.create_order(market_id, outcome, size, price)
+```
+
+## Rate Limiting & Caching
+
+The terminal implements in-memory market caching with `_market_cache` keyed on `conditionId`, `id`, and `slug` simultaneously.
+
+| Resource | Cache TTL | Notes |
+|----------|-----------|-------|
+| Market data | Session | Reset on bot restart |
+| Whale analysis | 6 hours | Per wallet address |
+| Signal deduplication | 24 hours | Per market + pattern combination |
+
+Whale analysis results are cached per wallet for 6 hours. Signal deduplication uses a `seen_trades` dictionary with 24-hour TTL — signals will not re-fire for the same market/pattern combination within that window.

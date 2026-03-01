@@ -1,0 +1,96 @@
+---
+title: Quickstart
+description: "Connect your wallet, follow your first whale, and receive your first signal in under 5 minutes."
+---
+
+## Prerequisites
+
+Before you start, make sure you have:
+
+<AccordionGroup>
+  <Accordion title="A Telegram account">
+    The terminal operates entirely within Telegram. No web interface required.
+  </Accordion>
+  <Accordion title="A funded Polygon wallet (for trading)">
+    You need a Polygon wallet with USDC to execute trades. Signals will still fire without a wallet — you just won't be able to execute them automatically.
+  </Accordion>
+  <Accordion title="Polymarket CLOB API keys (for auto-execution)">
+    Generate API keys from your Polygon wallet on Polymarket. These are stored encrypted and only decrypted at the moment of order execution.
+  </Accordion>
+</AccordionGroup>
+
+## Step 1 — Start the Bot
+
+Open Telegram and find the bot, then send `/start`. You'll see the main menu with all available actions.
+
+```
+/start
+```
+
+## Step 2 — Add Wallets to Follow
+
+Use `/wallets` to manage your followed wallets. Add any Polygon wallet address you want to track:
+
+```
+/wallets
+→ Add Wallet
+→ Paste wallet address
+```
+
+<Note>
+  The **Intersection Pattern** requires at least 2 followed wallets to fire. We recommend starting with 5–10 known whale addresses.
+</Note>
+
+## Step 3 — Configure Your Risk Settings
+
+Before enabling Auto Mode, set your risk limits via `/settings`:
+
+```
+/settings
+→ Risk Configuration
+→ Set min/max trade amounts
+→ Choose risk level: Low / Medium / High
+```
+
+## Step 4 — Start Monitoring
+
+Hit **Start Monitoring** from the main menu. The terminal will immediately begin scanning every 30 seconds.
+
+```
+/monitor
+```
+
+<Check>
+  You're live. The first signals will arrive within the next monitoring cycle.
+</Check>
+
+## Step 5 — Choose Your Trading Mode
+
+<CodeGroup>
+
+```text Manual Mode (Default)
+Every signal arrives as a Telegram notification.
+You press "Enter Trade" or "Skip" on each one individually.
+Full control, no automatic execution.
+```
+
+```text Auto Mode
+Signals that match your enabled patterns are executed
+automatically without confirmation. A notification is
+sent after every execution.
+```
+
+</CodeGroup>
+
+Switch between modes at any time from `/settings → Trading Mode`.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Understand Signals" icon="bolt" href="/docs/core/signal-detection">
+    Deep dive into all 5 detection patterns and when they fire.
+  </Card>
+  <Card title="Read Signal Scores" icon="star" href="/docs/core/signal-scoring">
+    Learn how the 1–100 composite score is calculated.
+  </Card>
+</CardGroup>

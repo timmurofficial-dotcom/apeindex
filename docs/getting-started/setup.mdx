@@ -1,0 +1,66 @@
+---
+title: Setup & Configuration
+description: "Configure your wallets, API keys, and risk management settings."
+---
+
+## Connecting Your Wallet
+
+To execute trades, the terminal needs your Polymarket CLOB API credentials. These are generated from your Polygon wallet on Polymarket.
+
+<Steps>
+  <Step title="Generate CLOB API Keys">
+    Visit [polymarket.com](https://polymarket.com) and connect your Polygon wallet. Navigate to **Settings → API Keys** and generate a new key pair.
+  </Step>
+  <Step title="Store Keys in the Terminal">
+    In the bot, go to `/settings → API Configuration` and paste your API key and secret. Keys are stored **AES-encrypted** in the database and only decrypted at the moment of order execution.
+  </Step>
+  <Step title="Fund Your Wallet">
+    Ensure your Polygon wallet has USDC. The minimum trade amount is configurable (default: $10).
+  </Step>
+</Steps>
+
+<Warning>
+  Never share your CLOB API keys with anyone. The terminal stores them encrypted, but you should treat them with the same care as a private key.
+</Warning>
+
+## Risk Configuration
+
+Risk settings apply at two levels:
+
+### Global Settings
+
+Applied to all patterns unless overridden by per-pattern settings.
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| Minimum trade amount | $10 | Smallest amount executed per signal |
+| Maximum trade amount | $100 | Cap on any single trade |
+| Risk level | Medium | Multiplier applied to base sizing |
+
+### Per-Pattern Settings
+
+Each of the 5 patterns can have independent sizing. Configure via `/settings → Per-Pattern Risk`.
+
+### Risk Levels
+
+<CardGroup cols={3}>
+  <Card title="Low" icon="shield">
+    Conservative sizing. Best for new users or volatile markets.
+  </Card>
+  <Card title="Medium" icon="shield-half">
+    Balanced. The recommended starting point.
+  </Card>
+  <Card title="High" icon="fire">
+    Maximum sizing. Only use with patterns you have confidence in.
+  </Card>
+</CardGroup>
+
+## Notification Settings
+
+Control which patterns send notifications and whether they are auto-executed:
+
+```
+/settings → Signal Patterns
+```
+
+Toggle each pattern on/off independently for both **notifications** and **auto-execution**.
