@@ -1,26 +1,26 @@
 ---
-title: Setup & Configuration
-description: "Configure your wallets, API keys, and risk management settings."
+title: "Setup & Configuration"
+description: "Configure your wallets and risk management settings."
 ---
 
 ## Connecting Your Wallet
 
-To execute trades, the terminal needs your Polymarket CLOB API credentials. These are generated from your Polygon wallet on Polymarket.
+No external setup required. ApeIndex generates a fully functional trading wallet for you directly inside Telegram — including private key, CLOB API credentials, and a deposit address.
 
 <Steps>
-  <Step title="Generate CLOB API Keys">
-    Visit [polymarket.com](https://polymarket.com) and connect your Polygon wallet. Navigate to **Settings → API Keys** and generate a new key pair.
+  <Step title="Create Your Wallet">
+    In the bot, tap Wallet → Create Wallet. The terminal instantly generates a new Polygon wallet with all required keys. No browser extension or external app needed.
   </Step>
-  <Step title="Store Keys in the Terminal">
-    In the bot, go to `/settings → API Configuration` and paste your API key and secret. Keys are stored **AES-encrypted** in the database and only decrypted at the moment of order execution.
+  <Step title="Deposit USDC">
+    The terminal shows your deposit address. Send USDC (Polygon network) to that address. Your balance will appear in the bot automatically once the transaction confirms.
   </Step>
-  <Step title="Fund Your Wallet">
-    Ensure your Polygon wallet has USDC. The minimum trade amount is configurable (default: $10).
+  <Step title="Start Trading">
+    That's it — your wallet is ready. All CLOB API credentials are generated and stored automatically. You can start receiving and executing signals immediately.
   </Step>
 </Steps>
 
 <Warning>
-  Never share your CLOB API keys with anyone. The terminal stores them encrypted, but you should treat them with the same care as a private key.
+  Save your private key shown during wallet creation — it is displayed only once. ApeIndex stores it encrypted, but you should back it up in a safe place in case you need to recover access.
 </Warning>
 
 ## Risk Configuration
@@ -31,11 +31,11 @@ Risk settings apply at two levels:
 
 Applied to all patterns unless overridden by per-pattern settings.
 
-| Setting | Default | Description |
-|---------|---------|-------------|
-| Minimum trade amount | $10 | Smallest amount executed per signal |
-| Maximum trade amount | $100 | Cap on any single trade |
-| Risk level | Medium | Multiplier applied to base sizing |
+| Setting              | Default | Description                         |
+| -------------------- | ------- | ----------------------------------- |
+| Minimum trade amount | \$10    | Smallest amount executed per signal |
+| Maximum trade amount | \$100   | Cap on any single trade             |
+| Risk level           | Medium  | Multiplier applied to base sizing   |
 
 ### Per-Pattern Settings
 
@@ -44,13 +44,13 @@ Each of the 5 patterns can have independent sizing. Configure via `/settings →
 ### Risk Levels
 
 <CardGroup cols={3}>
-  <Card title="Low" icon="shield">
+  <Card icon="shield" title="Low">
     Conservative sizing. Best for new users or volatile markets.
   </Card>
-  <Card title="Medium" icon="shield-half">
+  <Card icon="shield-half" title="Medium">
     Balanced. The recommended starting point.
   </Card>
-  <Card title="High" icon="fire">
+  <Card icon="fire" title="High">
     Maximum sizing. Only use with patterns you have confidence in.
   </Card>
 </CardGroup>
