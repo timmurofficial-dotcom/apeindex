@@ -1,0 +1,50 @@
+---
+title: Daily Digest
+description: "An automated morning summary delivered every day at 09:00 local time."
+---
+
+## Overview
+
+At **09:00 local time** every day, the terminal sends an automated digest to all users with an active monitoring session. The digest aggregates the previous 24 hours of activity from the `signal_history` database table.
+
+## Digest Contents
+
+<CardGroup cols={2}>
+  <Card title="Signal Count" icon="bolt">
+    Total number of signals fired in the last 24 hours across all active patterns.
+  </Card>
+  <Card title="Average Score" icon="chart-bar">
+    Mean composite score across all signals fired — a quick quality indicator.
+  </Card>
+  <Card title="Top 3 Signals" icon="star">
+    The three highest-scoring signals from the past day: pattern, market question, score, and outcome.
+  </Card>
+  <Card title="Realised P&L" icon="dollar-sign">
+    Total P&L from positions closed during the day via SL/TP or manual exit.
+  </Card>
+  <Card title="Open Positions" icon="folder-open">
+    Count of positions currently open across all markets.
+  </Card>
+</CardGroup>
+
+## Example Digest
+
+```
+📊 Daily Digest — March 1, 2026
+
+Signals fired: 14  ·  Avg score: 71/100
+
+🏆 Top Signals Yesterday
+1. Intersection  ·  "Will Trump sign X by March 5?"  ·  YES  ·  88/100
+2. Pre-News      ·  "Fed rate decision March 2026?"  ·  YES  ·  81/100
+3. Quick Flip    ·  "Will BTC close above 95k?"      ·  NO   ·  74/100
+
+💰 Realised P&L: +$47.20
+📂 Open positions: 3
+```
+
+## Digest Timing
+
+The digest is sent at 09:00 **local time** based on the timezone configured in your user settings. If no timezone is set, UTC is used.
+
+Configure your timezone via `/settings → Timezone`.

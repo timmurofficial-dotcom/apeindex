@@ -1,0 +1,92 @@
+---
+title: Database Schema
+description: "Local SQLite database schema — all tables created automatically on first launch."
+---
+
+## Overview
+
+The terminal uses a local SQLite database (`apeindex_bot.db`). All tables are created automatically on first launch with forward-compatible `ALTER TABLE` migration for new columns.
+
+<Note>
+  The database is single-node SQLite. For multi-user horizontal scaling, migration to PostgreSQL would be required.
+</Note>
+
+## Tables
+
+### `users`
+
+Stores per-user configuration, API credentials, and monitoring state.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `user_id` | INTEGER | Telegram user ID (primary key) |
+| `encrypted_api_keys` | TEXT | AES-encrypted CLOB API key pair |
+| `monitoring_active` | BOOLEAN | Whether monitoring task is running |
+| `trading_mode` | TEXT | `manual` or `auto` |
+| `risk_level` | TEXT | `low`, `medium`, or `high` |
+| `min_trade_amount` | REAL | Minimum trade size in USD |
+| `max_trade_amount` | REAL | Maximum trade size in USD |
+| `timezone` | TEXT | User's local timezone for digest |
+| `created_at` | DATETIME | Account creation timestamp |
+
+### `positions`
+
+All open and closed positions with P&L tracking.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INTEGER | Auto-increment primary key |
+| `user_id` | INTEGER | FK → users |
+| `market_id` | TEXT | Polymarket market `conditionId` |
+| `outcome` | TEXT | `Yes` or `No` |
+| `entry_price` | REAL | Price at time of execution |
+| `current_price` | REAL | Last fetched market price |
+| `size` | REAL | USD amount invested |
+| `stop_loss` | REAL | Configured SL level |
+| `take_profit` | REAL | Configured TP level |
+| `status` | TEXT | `open` or `closed` |
+| `exit_price` | REAL | Price at exit (null if open) |
+| `pnl` | REAL | Realised P&L in USD |
+| `opened_at` | DATETIME | Trade execution timestamp |
+| `closed_at` | DATETIME | Exit timestamp (null if open) |
+
+### `signal_history`
+
+All signals that have fired, used for the daily digest and analytics.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INTEGER | Auto-increment primary key |
+| `user_id` | INTEGER | FK → users |
+| `pattern` | TEXT | Which of the 5 patterns fired |
+| `market_id` | TEXT | Polymarket market ID |
+| `market_question` | TEXT | Human-readable market question |
+| `outcome` | TEXT | Suggested direction |
+| `score` | INTEGER | Composite score 1–100 |
+| `fired_at` | DATETIME | Signal timestamp |
+| `resolved` | BOOLEAN | Whether market has resolved |
+
+### `watchlist`
+
+User-specific market watchlist with entry price tracking.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INTEGER | Auto-increment primary key |
+| `user_id` | INTEGER | FK → users |
+| `market_id` | TEXT | Polymarket market ID |
+| `market_question` | TEXT | Human-readable question |
+| `entry_price` | REAL | Yes price at time of addition |
+| `added_at` | DATETIME | Addition timestamp |
+
+### `followed_wallets`
+
+Whale wallet addresses tracked per user.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INTEGER | Auto-increment primary key |
+| `user_id` | INTEGER | FK → users |
+| `wallet_address` | TEXT | Polygon wallet address |
+| `label` | TEXT | Optional user-defined label |
+| `added_at` | DATETIME | Addition timestamp |
