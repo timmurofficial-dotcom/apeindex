@@ -1,16 +1,16 @@
 ---
-title: Introduction
+title: "Introduction"
 description: "An intelligent Telegram-native trading terminal for Polymarket — the world's largest decentralized prediction market."
 ---
 
 <img
-  className="block dark:hidden"
-  src="/images/hero-light.png"
+  className="hidden dark:block"
+  src="/images/hero-dark.png"
   alt="ApeIndex"
 />
 <img
-  className="hidden dark:block"
-  src="/images/hero-dark.png"
+  className="dark:hidden"
+  src="/images/hero-light.png"
   alt="ApeIndex"
 />
 
@@ -21,32 +21,16 @@ The **ApeIndex** is a real-time, Telegram-native intelligence platform for tradi
 The system processes live market data **every 30 seconds**, maintains per-user position portfolios with unrealised P&L tracking, provides automatic stop-loss and take-profit execution, and delivers daily performance digests.
 
 <CardGroup cols={2}>
-  <Card
-    title="Quick Start"
-    icon="rocket"
-    href="/docs/getting-started/quickstart"
-  >
+  <Card icon="rocket" href="/docs/getting-started/quickstart" title="Quick Start">
     Get up and running in minutes — connect your wallet and start receiving signals.
   </Card>
-  <Card
-    title="Signal Detection"
-    icon="radar"
-    href="/docs/core/signal-detection"
-  >
+  <Card icon="radar" href="/docs/core/signal-detection" title="Signal Detection">
     Learn about the 5 proprietary patterns that detect market inefficiencies.
   </Card>
-  <Card
-    title="Whale Analysis"
-    icon="fish"
-    href="/docs/core/whale-analysis"
-  >
+  <Card icon="fish" href="/docs/core/whale-analysis" title="Whale Analysis">
     Understand how the terminal profiles and tracks on-chain whale activity.
   </Card>
-  <Card
-    title="Commands Reference"
-    icon="terminal"
-    href="/docs/reference/commands"
-  >
+  <Card icon="terminal" href="/docs/reference/commands" title="Commands Reference">
     Full list of Telegram slash commands and menu options.
   </Card>
 </CardGroup>
@@ -54,22 +38,22 @@ The system processes live market data **every 30 seconds**, maintains per-user p
 ## Key Features
 
 <CardGroup cols={2}>
-  <Card title="🐳 Real-Time Whale Tracking" icon="eye">
-    Monitor the 10 most recently active followed wallets. Get notified when whales enter — or exit — a market you're in.
+  <Card icon="eye" title="Real-Time Whale Tracking">
+    Monitor the  most recently active followed wallets in the terminal. Get notified when whales enter or exit — a market you're in right now.
   </Card>
-  <Card title="📡 5 Signal Patterns" icon="bolt">
-    Intersection, Pre-News, Quick Flip, Contrarian, and Position Growth — each tuned to detect a different type of market edge.
+  <Card icon="bolt" title="5 Signal Patterns">
+    Intersection, Pre-News, Quick Flip, Contrarian, and Position Growth. Each tuned to detect a different type of market edge.
   </Card>
-  <Card title="⚙️ Automated Execution" icon="robot">
+  <Card icon="robot" title="Automated Execution">
     Enable Auto Mode to execute qualifying signals instantly via the Polymarket CLOB API, no manual confirmation needed.
   </Card>
-  <Card title="🛡️ Risk Management" icon="shield">
+  <Card icon="shield" title="Risk Management">
     Configure stop-loss and take-profit per trade, globally or per pattern. The terminal watches prices every 60 seconds and exits automatically.
   </Card>
-  <Card title="📊 Portfolio Dashboard" icon="chart-line">
+  <Card icon="chart-line" title="Portfolio Dashboard">
     View all open positions with live unrealised P&L, entry price, and current market price — directly in Telegram.
   </Card>
-  <Card title="📬 Daily Digest" icon="envelope">
+  <Card icon="envelope" title="Daily Digest">
     Receive a morning summary every day at 09:00 local time — top signals, realised P&L, and open positions.
   </Card>
 </CardGroup>
