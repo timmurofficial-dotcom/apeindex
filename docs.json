@@ -54,7 +54,9 @@
           {
             "group": "Technical",
             "pages": [
+              "docs/advanced/whitepaper",
               "docs/advanced/architecture",
+              "docs/advanced/api-integration",
               "docs/advanced/database-schema",
               "docs/advanced/roadmap"
             ]
