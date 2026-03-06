@@ -1,0 +1,332 @@
+---
+title: Whitepaper v2.1
+description: "ApeIndex Copy-Trading Terminal — Technical Whitepaper. Intelligent Telegram-native trading terminal for Polymarket."
+---
+
+<Warning>
+  **Current Status: Testnet Mode** — Signal detection, whale monitoring, and the full web dashboard are live on mainnet data. On-chain trade execution is in final integration testing and will be enabled in the next release.
+</Warning>
+
+## Executive Summary
+
+ApeIndex is a full-stack Polymarket intelligence and copy-trading platform consisting of two tightly integrated products: a **Telegram bot** and a **web dashboard at apeindex.io**. Together they let traders discover top-performing on-chain strategies, follow whale wallets, receive AI-scored signals, and execute trades — all without leaving familiar tools.
+
+The Telegram terminal processes live market data **every 30 seconds**, maintains per-user position portfolios with unrealised P&L tracking, provides automatic stop-loss and take-profit execution, and delivers daily performance digests.
+
+The web dashboard surfaces **Strategy Vaults** — ranked, backtested trading strategies extracted from on-chain whale behaviour — alongside a live Traders leaderboard showing win rates, PnL, and AI scores for every tracked address.
+
+---
+
+## 1. Platform Overview
+
+ApeIndex is composed of two complementary products sharing a common data layer.
+
+### Web Dashboard — apeindex.io
+
+The web platform is the discovery and analytics layer. No account is required to browse strategies and traders. Registered users can configure their bot directly from the dashboard.
+
+#### Strategy Vaults
+
+Strategy Vaults are ranked, automatically-generated trading strategies derived from the on-chain behaviour of top Polymarket wallets. Each vault represents a distinct trading style, scored by an AI model trained on historical position data.
+
+| Field | Description |
+|-------|-------------|
+| **AI Score** | Composite 1–100 score combining win rate, PnL consistency, drawdown, and trade frequency |
+| **Win Rate** | Percentage of positions closed at a profit over the vault's lifetime |
+| **Extracted PnL** | Total P&L extracted from this strategy pattern in USD |
+| **Engine** | NATIVE = executed directly on Polymarket CLOB without intermediary |
+| **Positions** | Total number of historical positions attributed to this vault |
+
+Available strategy types:
+
+| Strategy | Logic |
+|----------|-------|
+| **Volume Spike** | Enters markets with sudden 24h volume anomalies — a pre-news signal |
+| **Trend Follow** | Follows price momentum on markets with established directional movement |
+| **Whale Mirror** | Directly copies positions of a tracked high-score whale wallet |
+| **Mean Revert** | Fades extreme price moves on high-liquidity markets |
+| **Momentum** | Rides short-term price acceleration triggered by new information |
+| **Scalper** | High-frequency entry/exit on near-50% probability markets |
+| **Contrarian** | Buys low-probability outcomes (5–22%) with asymmetric upside |
+| **Late Entry** | Enters established positions slightly after initial whale entry |
+| **Swing Trade** | Holds positions for multi-day moves across event-driven markets |
+
+#### Traders Leaderboard
+
+The Traders page ranks all tracked Polygon wallet addresses by AI Score. Each row shows the wallet's strategy classification, activity level, win rate, and total PnL. Addresses are tagged **WHALE** when their average position size exceeds a threshold calibrated to Polymarket's liquidity pools.
+
+#### User Dashboard
+
+Authenticated users see a personal dashboard with their bot's portfolio, signal history, and performance attribution. From the dashboard users can:
+
+- Add or remove whale wallets to follow — synced instantly to the Telegram bot
+- Enable or disable signal patterns per strategy type
+- View open positions, realised P&L, and daily digest history
+- Configure risk limits without opening Telegram
+
+### Telegram Bot
+
+The Telegram bot is the execution layer. All trading interaction — signal delivery, trade confirmation, portfolio view, risk configuration — happens in a single Telegram conversation. No external browser or wallet extension is required.
+
+- Monitoring engine processes data every 30 seconds per active user
+- Signals delivered with AI score, visual bar, and one-tap trade entry
+- Position monitor checks SL/TP and whale exits every 60 seconds
+- Daily digest sent at 09:00 local time with performance summary
+
+---
+
+## 2. System Architecture
+
+Five independent Python modules communicate through a shared SQLite database.
+
+| Module | Responsibility |
+|--------|---------------|
+| `polymarket_bot.py` | Telegram interface, command routing, notification delivery |
+| `monitor.py` | Per-user asyncio task, 30-second cycle, parallel pattern detection |
+| `copy_trader.py` | Trade sizing, USDC balance checks, CLOB order execution, P&L tracking |
+| `wallet_manager.py` | In-bot wallet generation, key encryption, USDC approval, allowance management |
+| `polymarket_api.py` | Gamma API and CLOB API wrapper with multi-key market cache |
+| `database.py` | SQLite schema, forward-compatible migrations, query helpers |
+
+### Data Flow
+
+Each active user spawns an independent asyncio monitoring task. Every 30 seconds the task calls `check_new_trades()`, which fans out to all enabled pattern detectors in parallel. Detectors call `search_markets()` and `get_user_activity()` against the Polymarket Gamma API, apply detection logic, score the signal, and write results to the database.
+
+`CopyTrader.execute_trade()` is called immediately for signals in Auto Mode, or queued for manual confirmation in Manual Mode.
+
+### Caching Strategy
+
+| Cache | TTL | Notes |
+|-------|-----|-------|
+| Market data (`_market_cache`) | Session | Keyed on `conditionId`, `id`, and `slug` simultaneously |
+| Whale analysis | 6 hours | Per wallet address |
+| Signal deduplication (`seen_trades`) | 24 hours | Per market + pattern combination |
+
+---
+
+## 3. Wallet System
+
+ApeIndex generates a fully functional Polygon trading wallet for each user **directly inside Telegram**. No Metamask, browser extension, or Polymarket account is required.
+
+### Wallet Generation
+
+- On first use, the bot generates a new Polygon wallet (private key + address) in-process
+- The private key is AES-encrypted using a per-deployment key stored in `wallet_encryption.key`
+- The encrypted key is stored in the `users` table — plaintext is never written to disk or logs
+- The user is shown the private key exactly once for backup, then the message is deleted
+
+<Warning>
+  Save your private key when it is shown during wallet creation — it is displayed **only once**. ApeIndex stores it encrypted, but you should back it up in a safe place.
+</Warning>
+
+### Balance & Allowance Management
+
+`wallet_manager` handles the full USDC lifecycle required for Polymarket trading:
+
+- `get_balance(user_id)` — returns current USDC and MATIC balances from Polygon
+- `get_allowance(user_id)` — checks current USDC approval for the CTF Exchange contract
+- `approve_usdc(user_id, amount)` — issues ERC-20 approval if allowance is below trade size
+- `execute_trade(...)` — constructs, signs, and submits the limit order to the CLOB API
+
+`CopyTrader.execute_trade()` automatically checks and approves USDC before every trade. The approval is set to 2× the trade amount to avoid repeated approval transactions.
+
+---
+
+## 4. Signal Detection
+
+Five independent pattern detectors run in parallel every 30 seconds. A maximum of **2 signals per pattern per cycle** are surfaced to avoid notification flooding. All detectors enforce `acceptingOrders=true` before surfacing any market.
+
+### Pattern 1 — Intersection <Badge>Strongest Signal</Badge>
+
+Monitors the 10 most recently active followed wallets for trades made within the last **2 hours**. When 2 or more wallets appear in the same market, an intersection is recorded. The most commonly chosen outcome is surfaced as the signal direction.
+
+```
+Trigger: followed_wallets_in_market ≥ 2, within last 2 hours
+Requires: minimum 2 followed wallets
+```
+
+### Pattern 2 — Pre-News Trading (Volume Spike)
+
+Detects markets experiencing abnormally high short-term volume relative to lifetime volume — a reliable indicator of information asymmetry prior to a news event.
+
+```
+Trigger: v24h / v_total ≥ 10%
+```
+
+### Pattern 3 — Quick Flip
+
+Targets markets where Yes price is in the **38–62% range**. High liquidity, tight spreads, well-suited for short-duration trades where a small information edge produces outsized returns.
+
+```
+Trigger: Yes price between 38¢ and 62¢
+```
+
+### Pattern 4 — Contrarian Plays
+
+Identifies low-probability outcomes (5–22%) that remain open and liquid. A 10¢ outcome pays $10 if resolved Yes. The $10k lifetime volume filter excludes illiquid long-shots.
+
+```
+Trigger: Yes price 5–22¢, lifetime volume ≥ $10,000
+```
+
+### Pattern 5 — Position Growth (Wallet Follow)
+
+Scans the current open positions of all followed wallets. Any open position worth **≥ $500** in an actively tradeable market generates a signal. Captures steady accumulation not visible in short-term volume spikes.
+
+```
+Trigger: followed_wallet.open_position ≥ $500, market.acceptingOrders = true
+```
+
+---
+
+## 5. Signal Scoring
+
+Every signal receives a composite score between **1 and 100** before delivery, displayed as a visual bar (`█████░░░░░`) alongside a qualitative label.
+
+| Score | Label |
+|-------|-------|
+| 85–100 | 🔥 Exceptional |
+| 70–84 | ✅ Strong Signal |
+| 50–69 | ⚡ Moderate |
+| 30–49 | ⚠️ Weak Signal |
+| 1–29 | ❄️ Noise |
+
+Scoring factors: wallet conviction count (Intersection), volume anomaly magnitude (Pre-News), whale profile win rate, market liquidity depth, and signal freshness.
+
+---
+
+## 6. Risk Management
+
+### Trade Sizing
+
+`CopyTrader._calculate_trade_amount()` computes trade size as a fraction of the source whale's position, clamped to the user's min/max range and adjusted by risk level multiplier.
+
+| Risk Level | Multiplier |
+|------------|-----------|
+| Low | 0.5× |
+| Medium | 1.0× (default) |
+| High | 1.5× |
+
+Hard limits: minimum **$5** per trade (system floor), maximum **$500** per trade (system cap). User configurable range defaults to $10–$100.
+
+### Stop Loss & Take Profit
+
+The position monitor runs every 60 seconds. When a price touches a configured level, the position is closed automatically via the CLOB API.
+
+| Preset | Stop Loss | Take Profit |
+|--------|-----------|-------------|
+| Conservative | -10% | +20% |
+| Balanced | -15% | +30% |
+| Aggressive | -25% | +50% |
+| Custom | User-defined | User-defined |
+
+### Whale Exit Notifications
+
+When a tracked whale reduces or closes a position in a market where the user is also long, an **immediate exit alert** fires — independent of SL/TP levels. Cannot be disabled while monitoring is active.
+
+---
+
+## 7. Testnet Mode
+
+<Warning>
+  ApeIndex is currently operating in **testnet mode**. No real funds are spent. Signal detection, wallet monitoring, and the web dashboard run on live mainnet data — only on-chain trade execution is simulated.
+</Warning>
+
+### What Is Fully Live
+
+- Signal detection — all 5 patterns run on real Polymarket data every 30 seconds
+- Whale wallet monitoring — all followed wallets tracked in real time
+- Notification delivery — signals, whale exits, watchlist alerts, daily digest
+- Portfolio UI — position tracking, P&L display, SL/TP configuration
+- Wallet generation — real Polygon wallets created and encrypted in-bot
+- Balance reading — real USDC and MATIC balances fetched from Polygon
+- Web dashboard — Strategy Vaults, Traders leaderboard, user dashboard
+- Risk configuration — all settings stored and applied to sizing calculations
+
+### What Is Simulated
+
+- `execute_trade()` currently returns a mock transaction hash (`0x000...000`) and does not submit an order to the CLOB API
+- USDC approval transactions are not sent on mainnet
+- P&L in testnet mode reflects signal outcomes, not actual executed trades
+
+### Path to Mainnet
+
+1. Complete EIP-712 typed signature implementation for CTF Exchange orders
+2. Final CLOB API authentication flow validation with live API keys
+3. End-to-end test with small amounts ($1–5) on Polygon mainnet
+4. Audit of `approve_usdc()` and `execute_trade()` gas estimation
+
+<Note>
+  The `execute_trade()` placeholder is isolated in `wallet_manager.py`. All other modules are production-ready. Enabling real execution requires only completing the CLOB integration — no interface changes needed.
+</Note>
+
+---
+
+## 8. API Integration
+
+### Polymarket Gamma API
+
+Used for market discovery, data lookup, and user activity. All queries enforce `active=true`, `closed=false`, `acceptingOrders=true`.
+
+Market data is cached in `_market_cache` keyed simultaneously on `conditionId`, `id`, and `slug` to handle the multiple ID formats returned by different API endpoints.
+
+### Polymarket CLOB API
+
+Order placement uses `clob.polymarket.com`. Authenticated requests require a CLOB API key pair generated from the user's Polygon wallet. Keys are stored AES-encrypted and decrypted only at execution time.
+
+### Rate Limiting & Caching
+
+| Resource | Cache Policy |
+|----------|-------------|
+| Market data | Session lifetime, multi-key cache |
+| Whale analysis | 6 hours per wallet address |
+| Signal deduplication | 24 hours per market + pattern |
+| Balance / allowance | Fetched fresh per trade execution |
+
+---
+
+## 9. Database Schema
+
+Local SQLite database (`apeindex_bot.db`). All tables created on first launch with forward-compatible `ALTER TABLE` migration for new columns.
+
+| Table | Contents |
+|-------|----------|
+| `users` | Config, encrypted wallet key, trading mode, risk settings, timezone |
+| `positions` | Open and closed positions with entry/exit price, SL/TP, realised P&L |
+| `signal_history` | All signals fired — pattern, market, score, timestamp, resolution status |
+| `watchlist` | Per-user market watchlist with entry price for alert calculation |
+| `followed_wallets` | Whale wallet addresses tracked per user with optional label |
+
+---
+
+## 10. Commands Reference
+
+| Command | Action |
+|---------|--------|
+| `/start` | Open main menu |
+| `/monitor` | Start or stop monitoring session |
+| `/portfolio` | View open positions with live P&L |
+| `/watchlist` | View and manage watched markets |
+| `/markets` | Market browser — trending, category, keyword search |
+| `/wallets` | Manage followed whale wallets |
+| `/settings` | Risk, patterns, trading mode, API configuration |
+| `/digest` | Request on-demand daily digest |
+
+---
+
+## 11. Roadmap
+
+| Feature | Description |
+|---------|-------------|
+| **Mainnet execution** | Complete CLOB integration, enable real on-chain trades |
+| **Signal backtesting** | Replay historical data to compute per-pattern win rates |
+| **Market correlation engine** | Surface related markets when a signal fires |
+| **Resolution tracking** | Auto-update `signal_history.resolved` when markets close |
+| **Multi-leg strategies** | Combine correlated markets in a single hedged trade |
+| **Webhook notifications** | Outbound HTTP hooks for external system integration |
+| **PostgreSQL migration** | Multi-user horizontal scaling support |
+| **Vault subscriptions** | One-tap subscribe to a Strategy Vault — bot auto-mirrors all signals |
+
+---
+
+*ApeIndex · Copy-Trading Terminal · v2.1 · March 2026*
