@@ -1,0 +1,102 @@
+---
+title: Whale Analysis
+description: "Wallet profiles, Follow Wallets, Copy Trade, and Exit Alerts."
+---
+
+## Wallet X-Ray (Web Dashboard)
+
+On **apeindex.trade**, paste any Polymarket wallet address to instantly get:
+
+| Field | Description |
+|-------|-------------|
+| **AI Score** | Composite 1–100 score: win rate, PnL consistency, drawdown, trade frequency |
+| **Win Rate** | Percentage of positions closed at a profit |
+| **Total PnL** | Lifetime P&L in USD |
+| **Positions** | Total historical position count |
+| **Top Category** | Dominant market category (Politics, Sports, Crypto, Geopolitics) |
+
+The **Traders Leaderboard** ranks all tracked addresses with sortable columns. Addresses are tagged **WHALE** when their average position size exceeds platform liquidity thresholds.
+
+---
+
+## Follow Wallets (Notification-Only)
+
+Add wallet addresses to **Follow Wallets** to receive notifications when they trade — without any automatic execution.
+
+```
+Main Menu → Follow Wallets → Add Wallet → Paste address
+```
+
+Features:
+- Get notified when tracked wallets make trades or match signal patterns
+- Toggle notifications on/off per wallet ✅/⏸
+- Delete wallet with confirmation 🗑
+
+**Deep-link:** `t.me/bot?start=follow_0xADDRESS`
+
+Use this to monitor wallets before deciding whether to copy them.
+
+---
+
+## Copy Trade (Automatic Mirroring)
+
+Add wallet addresses to **Copy Trade** to have the bot automatically mirror their positions in real-time.
+
+```
+Main Menu → Copy Trade → Add Wallet → Paste address
+```
+
+How it works:
+1. Bot polls Polymarket activity API every **60 seconds**
+2. When a tracked wallet trades, the bot immediately enters the same position
+3. Rich notification sent: wallet address, outcome, price, amount, token IDs, tx hash
+4. Paper trading mode fully supported — uses virtual balance, logs paper positions
+5. Real mode uses FOK (Fill-or-Kill) first, GTC (Good-Til-Cancelled) fallback
+
+Features:
+- Toggle copy on/off per wallet ✅/⏸
+- Delete wallet with confirmation 🗑
+
+**Deep-link:** `t.me/bot?start=copy_0xADDRESS`
+
+---
+
+## Exit Alert
+
+When any tracked whale (from either Follow Wallets or Copy Trade) **reduces or closes** a position in a market where you are also long, an **immediate exit notification** fires — independent of your stop-loss levels.
+
+The notification includes an **Exit** button for one-tap position closure.
+
+Exit alerts are always active when monitoring is running and cannot be disabled independently.
+
+---
+
+## Inline Whale Profiles
+
+Every signal that originates from a tracked wallet includes an inline profile computed from recent on-chain activity, **cached per wallet for 6 hours**.
+
+| Field | Description |
+|-------|-------------|
+| **Win Rate** | % of closed trades with positive P&L |
+| **Average Size** | Mean trade size in USD (last 50 transactions) |
+| **Top Category** | Dominant market category |
+| **Total Trades** | On-chain activity record count |
+
+## Category Classification
+
+Market questions are classified into four categories:
+
+<CardGroup cols={2}>
+  <Card title="🏛️ Politics" icon="landmark">
+    trump, election, president, senate, democrat, republican
+  </Card>
+  <Card title="🏆 Sports" icon="trophy">
+    nfl, nba, nhl, mlb, championship
+  </Card>
+  <Card title="₿ Crypto" icon="bitcoin-sign">
+    bitcoin, ethereum, btc, eth, defi
+  </Card>
+  <Card title="🌍 Geopolitics" icon="globe">
+    iran, russia, ukraine, china, war, nato
+  </Card>
+</CardGroup>

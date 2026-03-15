@@ -1,0 +1,74 @@
+{
+  "name": "ApeIndex",
+  "theme": "mint",
+  "colors": {
+    "primary": "#6366F1",
+    "light": "#818CF8",
+    "dark": "#4338CA"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Telegram Bot",
+        "href": "https://www.apeindex.trade/"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Launch Terminal",
+      "href": "https://t.me/your_bot"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "docs/getting-started/introduction",
+              "docs/getting-started/quickstart",
+              "docs/getting-started/setup"
+            ]
+          },
+          {
+            "group": "Core Features",
+            "pages": [
+              "docs/core/signal-detection",
+              "docs/core/signal-scoring",
+              "docs/core/whale-analysis",
+              "docs/core/position-management",
+              "docs/core/market-browser",
+              "docs/core/daily-digest"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "docs/reference/commands",
+              "docs/reference/trading-modes",
+              "docs/reference/risk-configuration"
+            ]
+          },
+          {
+            "group": "Technical",
+            "pages": [
+              "docs/advanced/whitepaper",
+              "docs/advanced/architecture",
+              "docs/advanced/database-schema",
+              "docs/advanced/roadmap"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "telegram": "https://t.me/ape_index",
+      "x": "https://x.com/apeindex_app",
+      "website": "https://www.apeindex.trade/"
+    }
+  }
+}

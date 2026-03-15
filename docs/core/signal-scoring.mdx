@@ -1,0 +1,100 @@
+---
+title: Signal Scoring
+description: "Every signal receives a composite score 1–100 before delivery."
+---
+
+## How Scoring Works
+
+Every signal receives a **composite score between 1 and 100** before delivery. The score is displayed as a visual 10-segment bar alongside a qualitative label.
+
+```
+Score display in notification:
+▓▓▓▓▓▓▓▒░░  78/100  · ✅ Strong
+```
+
+## Score Tiers
+
+| Score | Label | Meaning |
+|-------|-------|---------|
+| 85–100 | 🔥 **Elite** | Highest confidence — multiple confirming factors |
+| 70–84 | ✅ **Strong** | High confidence, actionable |
+| 55–69 | 🟡 **Moderate** | Worth watching, consider sizing down |
+| 40–54 | ⚠️ **Weak** | Low confidence, informational only |
+| <40 | ❄️ **Very Weak** | Below threshold for most traders |
+
+## Scoring Breakdown (Total: 100 points)
+
+### 👑 Whale Factor — 0 to 30 points (MOST IMPORTANT)
+
+The number of tracked whales active in the signal's market:
+
+| Whales | Points |
+|--------|--------|
+| 1 whale | 20 pts |
+| 2 whales | 25 pts |
+| 3+ whales | 30 pts |
+
+Whale weight is the dominant factor because it represents direct informed trader conviction.
+
+### 📊 Volume Factor — 0 to 20 points
+
+Daily volume relative to platform activity:
+
+| Daily Volume | Points |
+|-------------|--------|
+| $100k+ | 20 pts |
+| $50k | ~15 pts |
+| $10k | ~10 pts |
+| <$1k | 0–5 pts |
+
+Thresholds are calibrated to actual Polymarket market sizes.
+
+### 🎯 Pattern Factor — 0 to 20 points
+
+Base score from the pattern that fired:
+
+| Pattern | Points |
+|---------|--------|
+| Intersection | 20 |
+| Position Add-On | 19 |
+| Big Entry (Kraken) | 16 |
+| Wallet Follow | 15 |
+| Pre-News | 14 |
+| Big Entry (Shark) | 13 |
+| Quick Flip | 12 |
+| Contrarian | 12 |
+| Position Growth | 12 |
+| Big Entry (Dolphin) | 10 |
+
+### ➕ Extras — 0 to 15 points
+
+Additional factors:
+- Volume spike percentage (how far above baseline)
+- Position size of the signal source
+
+### 🎯 Price Zone — 0 to 15 points
+
+Optimal price range (0.25–0.75) scores higher. Contrarian plays receive +3 bonus for asymmetric upside potential.
+
+## Visual Bar
+
+The 10-segment bar uses double-width blocks for fine resolution:
+
+```
+▓▓▓▓▓▓▓▓▓▓  90+ pts  🔥 Elite
+▓▓▓▓▓▓▓▒░░  70–84    ✅ Strong
+▓▓▓▓▓▒▒░░░  55–69    🟡 Moderate
+▓▓▓▒░░░░░░  40–54    ⚠️ Weak
+▓▒░░░░░░░░  <40      ❄️ Very Weak
+```
+
+## Score in Notifications
+
+Every signal notification includes:
+- Visual bar `▓▓▓▓▓▒▒░░░`
+- Numeric score (e.g. `63/100`)
+- Tier label
+- Pattern that fired
+- Market question and suggested outcome
+
+Use the score to prioritise signals in Manual Mode, or set a minimum score threshold in Auto Mode.

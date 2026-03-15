@@ -1,0 +1,66 @@
+---
+title: "Introduction"
+description: "ApeIndex — a full-stack Polymarket intelligence and copy-trading platform for the world's largest decentralized prediction market."
+---
+
+## What is ApeIndex?
+
+**ApeIndex** is a full-stack Polymarket intelligence and copy-trading platform built on two tightly integrated products: a **web dashboard** and a **Telegram bot**.
+
+Together they let traders discover top-performing on-chain strategies, follow whale wallets, receive AI-scored signals, and execute trades — all without leaving familiar tools.
+
+<CardGroup cols={2}>
+  <Card icon="rocket" href="/docs/getting-started/quickstart" title="Quick Start">
+    Get up and running in minutes — connect your wallet and start receiving signals.
+  </Card>
+  <Card icon="radar" href="/docs/core/signal-detection" title="Signal Detection">
+    Learn about the 8 proprietary patterns that detect market inefficiencies.
+  </Card>
+  <Card icon="fish" href="/docs/core/whale-analysis" title="Whale Analysis">
+    Understand how the platform profiles and tracks on-chain whale activity.
+  </Card>
+  <Card icon="terminal" href="/docs/reference/commands" title="Commands Reference">
+    Full list of Telegram commands and menu options.
+  </Card>
+</CardGroup>
+
+## Platform Components
+
+### Web Dashboard — apeindex.trade
+
+The discovery and analytics layer. No account required to browse.
+
+- **Wallet X-Ray** — paste any Polymarket address and get an AI Score, win rate, PnL, and historical position analysis in seconds
+- **Traders Leaderboard** — ranked list of all tracked addresses with win rate, PnL, and AI Score. Top performers tagged as WHALE
+- **Strategy Vaults** — ranked, backtested trading strategies extracted from on-chain whale behaviour
+
+### Telegram Bot
+
+The execution layer. All trading interaction happens in a single Telegram conversation — no browser extension or external wallet required.
+
+<CardGroup cols={2}>
+  <Card icon="eye" title="Real-Time Whale Tracking">
+    Follow specific wallets and get notified instantly when they trade. Separate Follow (notify-only) and Copy Trade (auto-execute) modes.
+  </Card>
+  <Card icon="bolt" title="8 Signal Patterns">
+    Intersection, Pre-News, Quick Flip, Contrarian, Position Growth, Position Add-On, Big Entry, and Wallet Follow — each tuned to detect a different market edge.
+  </Card>
+  <Card icon="robot" title="Copy Trading">
+    Add wallets to Copy Trade and the bot automatically mirrors their positions in real-time using FOK/GTC order execution.
+  </Card>
+  <Card icon="shield" title="Risk Management">
+    Stop-loss and take-profit per trade, paper trading mode with $10k virtual balance, and instant whale exit alerts.
+  </Card>
+  <Card icon="chart-line" title="Portfolio Dashboard">
+    View all open positions with live unrealised P&L, entry price, current price, and SL/TP levels — directly in Telegram.
+  </Card>
+  <Card icon="envelope" title="Two Daily Digests">
+    Morning digest at 09:00 (your signals + P&L) and evening digest at 22:00 (global platform stats + top 3 traders leaderboard).
+  </Card>
+</CardGroup>
+
+## Current Status
+
+<Warning>
+  **Testnet period (2 weeks)** — Signal detection, whale monitoring, and the full web dashboard are live on mainnet data. On-chain trade execution is available now for users ready to trade. Full public on-chain launch completes in approximately 2 weeks.
+</Warning>

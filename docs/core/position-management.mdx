@@ -1,0 +1,64 @@
+---
+title: Position Management
+description: "Real-time portfolio tracking, stop-loss/take-profit automation, and paper trading."
+---
+
+## Portfolio View
+
+The `/portfolio` command shows all open positions in real time. For each position:
+
+- Current price of the held outcome
+- Unrealised P&L (% and USD)
+- Configured stop-loss and take-profit levels
+- Total portfolio-level P&L
+
+```
+/portfolio
+```
+
+## Paper Trading
+
+Paper trading uses a **$10,000 virtual balance** — fully independent from your real account. All 8 patterns, signals, notifications, copy trading, and SL/TP automation work identically in paper mode.
+
+Switch modes at any time: `/settings → Trading Mode → Paper / Live`
+
+Paper positions and paper trades are stored separately and do not affect real balances.
+
+## Order Execution
+
+All real trades use a two-step execution strategy:
+
+1. **FOK (Fill-or-Kill)** — attempts immediate full fill at limit price
+2. **GTC (Good-Til-Cancelled)** — automatic fallback if FOK fails; polls every 60 seconds until filled or cancelled
+
+## Stop Loss & Take Profit
+
+After a trade is executed, you are offered four preset risk configurations:
+
+| Config | Stop Loss | Take Profit |
+|--------|-----------|-------------|
+| Conservative | -10% | +20% |
+| Balanced | -15% | +30% |
+| Aggressive | -25% | +50% |
+| Custom | Set manually | Set manually |
+
+The background monitor checks all open positions **every 60 seconds**. When a price touches a configured level, the position is closed automatically and a notification is sent with exit price and final P&L.
+
+<Note>
+  Update stop-loss and take-profit levels at any time from the position detail screen. Changes take effect on the next monitor cycle.
+</Note>
+
+## Automatic Exit Logic
+
+```
+Every 60 seconds:
+  for each open position:
+    fetch current market price
+    if price <= stop_loss_level → close position, notify user
+    if price >= take_profit_level → close position, notify user
+    if whale_exit_detected → send immediate exit alert
+```
+
+## Neg-Risk Markets
+
+Positions opened on polymarket.com via proxy wallets cannot be closed by the bot. These must be closed on the website. Use the **🗑 Remove** button in the bot to remove the position record from your portfolio.

@@ -1,0 +1,79 @@
+---
+title: System Architecture
+description: "Five independent Python modules communicating through a shared SQLite database."
+---
+
+## Overview
+
+The platform is composed of **five independent Python modules** communicating through a shared SQLite database. The Telegram bot handles all user interaction; monitoring, copy trading, and position management run in background asyncio tasks.
+
+## Architecture Diagram
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                    Telegram Bot Layer                     │
+│    polymarket_bot_v2.py (6,079 lines)                    │
+│    (commands, menus, notifications, deep-links, digests)  │
+└───────────────────────┬──────────────────────────────────┘
+                        │
+          ┌─────────────┴──────────────┐
+          ▼                            ▼
+┌──────────────────┐        ┌──────────────────────┐
+│  Per-User        │        │  Copy Trade Loop      │
+│  Monitoring Task │        │  copy_trader.py       │
+│  monitor.py      │        │  60s polling per      │
+│  30s cycle       │        │  tracked wallet       │
+│                  │        │                       │
+│  8 Pattern       │        │  FOK → GTC execution  │
+│  Detectors       │        │  Paper + Live modes   │
+└────────┬─────────┘        └──────────┬────────────┘
+         │                             │
+         └──────────┬──────────────────┘
+                    │
+        ┌───────────┴────────────┐
+        ▼                        ▼
+┌──────────────────┐   ┌──────────────────────────┐
+│  Polymarket APIs │   │  SQLite Database          │
+│  polymarket_api  │   │  14 tables                │
+│  Gamma API       │   │  users, positions, trades │
+│  CLOB API        │   │  signals, copy_wallets    │
+│  Google News RSS │   │  referrals, paper, alerts │
+│  Builder API hdr │   └──────────────────────────┘
+└──────────────────┘
+        │
+        ▼
+┌──────────────────────┐
+│  wallet_manager.py   │
+│  (1,998 lines)       │
+│  On-chain ops        │
+│  USDC lifecycle      │
+│  Builder API         │
+└──────────────────────┘
+```
+
+## Module Responsibilities
+
+| Module | Lines | Responsibility |
+|--------|-------|---------------|
+| `polymarket_bot_v2.py` | 6,079 | Telegram interface, command routing, notification delivery, digests, deep-linking |
+| `monitor.py` | 977 | Per-user asyncio task, 30s cycle, 8 pattern detectors, signal scoring |
+| `polymarket_api.py` | 555 | Gamma API + CLOB API wrapper, TTL cache, Builder ID header injection |
+| `wallet_manager.py` | 1,998 | Wallet generation, key encryption, USDC approval, on-chain execution, Builder API |
+| `copy_trader.py` | 293 | Copy trade logic, FOK/GTC order execution, paper trade simulation |
+
+## Caching Strategy
+
+| Cache | TTL | Purpose |
+|-------|-----|---------|
+| Market data (`_market_cache`) | Session | Keyed on `conditionId`, `id`, and `slug` |
+| Whale analysis | 6 hours | Per wallet, limits Gamma API calls |
+| Signal deduplication | 24 hours | Prevents re-firing same user+market+pattern |
+
+## External APIs
+
+| API | Purpose |
+|-----|---------|
+| `gamma-api.polymarket.com` | Market discovery, user activity, position data |
+| `clob.polymarket.com` | Order placement, position management |
+| `news.google.com/rss/search` | Google News RSS for Pre-News pattern enrichment |
+| Polygon RPC | USDC balance, allowance, on-chain transactions |

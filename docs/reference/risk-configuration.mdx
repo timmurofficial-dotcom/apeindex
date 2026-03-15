@@ -1,0 +1,47 @@
+---
+title: Risk Configuration
+description: "Global and per-pattern risk settings that control trade sizing and stop-loss behavior."
+---
+
+## Two-Level Risk System
+
+1. **Global settings** — apply to all patterns unless overridden
+2. **Per-pattern settings** — independent sizing for each of the 8 patterns
+
+## Configurable Fields
+
+| Field | Default | Description |
+|-------|---------|-------------|
+| Minimum trade amount | $10 | Floor on any single trade |
+| Maximum trade amount | $100 | Cap on any single trade |
+| Risk level | Medium | Internal multiplier (Low / Medium / High) |
+
+## Risk Levels
+
+| Level | Multiplier | Best For |
+|-------|-----------|----------|
+| Low | 0.5× | New users, Contrarian pattern |
+| Medium | 1.0× | Standard usage, balanced patterns |
+| High | 2.0× | Experienced users, high-confidence patterns |
+
+## Recommended Settings by Pattern
+
+| Pattern | Suggested Risk Level | Notes |
+|---------|---------------------|-------|
+| 🔀 Intersection | Medium–High | Highest signal confidence |
+| 🔁 Position Add-On | High | Maximum conviction signal |
+| 🦑 Big Entry (Kraken) | Medium–High | Large whale entries |
+| 📰 Pre-News | Medium | Good confidence, binary outcome |
+| 👛 Wallet Follow | Medium | Real-time, act quickly |
+| ⚡ Quick Flip | Medium | Short duration, higher frequency |
+| 📈 Position Growth | Medium | Steady signal, lower urgency |
+| 🎲 Contrarian | Low | Asymmetric upside, higher failure rate |
+
+## Configuring Risk
+
+```
+/settings → Risk Configuration → Global Settings
+/settings → Risk Configuration → Per-Pattern Settings → [Pattern]
+```
+
+Changes take effect on the next monitoring cycle.

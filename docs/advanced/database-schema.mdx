@@ -1,0 +1,175 @@
+---
+title: Database Schema
+description: "Local SQLite database — 14 tables created automatically on first launch."
+---
+
+## Overview
+
+The terminal uses a local SQLite database (`apeindex_bot.db`). All 14 tables are created automatically on first launch with forward-compatible `ALTER TABLE` migrations for new columns.
+
+<Note>
+  Single-node SQLite. For multi-user horizontal scaling, migration to PostgreSQL is on the roadmap.
+</Note>
+
+## Core Tables
+
+### `users`
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `user_id` | INTEGER | Telegram user ID (primary key) |
+| `wallet_address` | TEXT | User's Polygon wallet address |
+| `encrypted_private_key` | TEXT | AES-encrypted private key |
+| `monitoring_active` | BOOLEAN | Whether monitoring task is running |
+| `trading_mode` | TEXT | `manual`, `auto`, `paper` |
+| `risk_level` | TEXT | `low`, `medium`, `high` |
+| `min_trade_amount` | REAL | Minimum trade size in USD |
+| `max_trade_amount` | REAL | Maximum trade size in USD |
+| `paper_balance` | REAL | Virtual paper trading balance (default $10,000) |
+| `referral_code` | TEXT | User's unique referral code |
+| `timezone` | TEXT | User timezone for digest delivery |
+| `created_at` | DATETIME | Account creation timestamp |
+
+### `positions`
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INTEGER | Auto-increment primary key |
+| `user_id` | INTEGER | FK → users |
+| `market_id` | TEXT | Polymarket market conditionId |
+| `outcome` | TEXT | `Yes` or `No` |
+| `entry_price` | REAL | Price at execution |
+| `exit_price` | REAL | Price at exit (null if open) |
+| `exit_amount` | REAL | Amount received at exit |
+| `size` | REAL | USD amount invested |
+| `stop_loss` | REAL | Configured SL level |
+| `take_profit` | REAL | Configured TP level |
+| `status` | TEXT | `open` or `closed` |
+| `pnl` | REAL | Realised P&L in USD |
+| `opened_at` | DATETIME | Trade execution timestamp |
+| `closed_at` | DATETIME | Exit timestamp (null if open) |
+
+### `signal_history`
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INTEGER | Auto-increment primary key |
+| `user_id` | INTEGER | FK → users |
+| `pattern` | TEXT | Which of the 8 patterns fired |
+| `market_id` | TEXT | Polymarket market ID |
+| `market_question` | TEXT | Human-readable question |
+| `outcome` | TEXT | Suggested direction |
+| `score` | INTEGER | Composite score 1–100 |
+| `fired_at` | DATETIME | Signal timestamp |
+| `resolved` | BOOLEAN | Whether market has resolved |
+
+### `trades`
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INTEGER | Auto-increment primary key |
+| `user_id` | INTEGER | FK → users |
+| `market_id` | TEXT | Market ID |
+| `outcome` | TEXT | `Yes` or `No` |
+| `amount` | REAL | USD amount |
+| `price` | REAL | Execution price |
+| `tx_hash` | TEXT | On-chain transaction hash |
+| `mode` | TEXT | `live` or `paper` |
+| `executed_at` | DATETIME | Execution timestamp |
+
+## Wallet Tracking Tables
+
+### `followed_wallets` (Follow Wallets — notify only)
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INTEGER | Auto-increment primary key |
+| `user_id` | INTEGER | FK → users |
+| `wallet_address` | TEXT | Tracked Polygon address |
+| `label` | TEXT | Optional user-defined label |
+| `notifications_enabled` | BOOLEAN | Per-wallet toggle |
+| `added_at` | DATETIME | Addition timestamp |
+
+### `copy_wallets` (Copy Trade — auto-mirror)
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INTEGER | Auto-increment primary key |
+| `user_id` | INTEGER | FK → users |
+| `wallet_address` | TEXT | Wallet to copy |
+| `label` | TEXT | Optional label |
+| `copy_enabled` | BOOLEAN | Per-wallet enable/disable toggle |
+| `last_trade_id` | TEXT | Last processed trade ID (crash recovery) |
+| `added_at` | DATETIME | Addition timestamp |
+
+### `copy_trades`
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INTEGER | Auto-increment primary key |
+| `user_id` | INTEGER | FK → users |
+| `source_wallet` | TEXT | Wallet that was copied |
+| `market_id` | TEXT | Market ID |
+| `outcome` | TEXT | `Yes` or `No` |
+| `amount` | REAL | USD amount executed |
+| `price` | REAL | Execution price |
+| `tx_hash` | TEXT | Transaction hash |
+| `mode` | TEXT | `live` or `paper` |
+| `executed_at` | DATETIME | Execution timestamp |
+
+## Referral Tables
+
+### `referrals`
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INTEGER | Auto-increment |
+| `referrer_user_id` | INTEGER | User who shared the code |
+| `referred_user_id` | INTEGER | User who joined via the link |
+| `joined_at` | DATETIME | Join timestamp |
+
+### `referral_earnings`
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INTEGER | Auto-increment |
+| `user_id` | INTEGER | Earner |
+| `amount` | REAL | Earnings in USD |
+| `trade_id` | INTEGER | Source trade |
+| `created_at` | DATETIME | Record timestamp |
+
+## Additional Tables
+
+### `watchlist`
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `user_id` | INTEGER | FK → users |
+| `market_id` | TEXT | Polymarket market ID |
+| `market_question` | TEXT | Human-readable question |
+| `entry_price` | REAL | Yes price at time of addition |
+| `added_at` | DATETIME | Addition timestamp |
+
+### `paper_positions` / `paper_trades`
+
+Identical schema to `positions` and `trades` but isolated for paper trading mode. Use the same SL/TP logic, copy trade execution, and P&L tracking against the virtual $10,000 balance.
+
+### `alerts`
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INTEGER | Auto-increment |
+| `user_id` | INTEGER | FK → users |
+| `type` | TEXT | `watchlist`, `exit`, `sl`, `tp` |
+| `market_id` | TEXT | Related market |
+| `triggered_at` | DATETIME | When alert fired |
+| `notified` | BOOLEAN | Whether notification was sent |
+
+### `digest_history`
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INTEGER | Auto-increment |
+| `user_id` | INTEGER | FK → users |
+| `type` | TEXT | `morning` or `evening` |
+| `sent_at` | DATETIME | Delivery timestamp |

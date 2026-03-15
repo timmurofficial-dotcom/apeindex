@@ -1,0 +1,93 @@
+---
+title: "Quickstart"
+description: "Connect your wallet, follow your first whale, and receive your first signal in under 5 minutes."
+---
+
+## Prerequisites
+
+<AccordionGroup>
+  <Accordion title="A Telegram account">
+    The terminal operates entirely within Telegram. No web interface required for trading.
+  </Accordion>
+  <Accordion title="A funded Polygon wallet (for live trading)">
+    You need a Polygon wallet with USDC to execute real trades. Paper trading mode is available with a $10,000 virtual balance — no wallet needed to start.
+  </Accordion>
+</AccordionGroup>
+
+## Step 1 — Start the Bot
+
+Open Telegram, find the bot, and send `/start`. You'll see the main menu with all available actions.
+
+```
+/start
+```
+
+## Step 2 — Choose Your Mode
+
+<CodeGroup>
+
+```text Paper Trading (Recommended to Start)
+Uses a $10,000 virtual balance.
+All signals, patterns, and notifications are identical to real mode.
+Zero risk — perfect for learning the system.
+Enable via: /settings → Trading Mode → Paper
+```
+
+```text Live Trading
+Uses your real Polygon wallet and USDC balance.
+FOK orders first, automatic GTC fallback.
+Enable via: /settings → Trading Mode → Live
+```
+
+</CodeGroup>
+
+## Step 3 — Add Wallets to Track
+
+You have two separate wallet tracking features:
+
+```
+Main Menu → Follow Wallets   — Notification-only. Get alerted when wallets trade.
+Main Menu → Copy Trade       — Auto-execute. Bot mirrors positions in real-time.
+```
+
+<Note>
+  The **Intersection Pattern** requires at least 2 followed wallets to fire. We recommend starting with 5–10 known whale addresses from the apeindex.trade leaderboard.
+</Note>
+
+You can also add wallets instantly via deep-links:
+- `t.me/bot?start=follow_0xADDRESS` — adds to Follow Wallets
+- `t.me/bot?start=copy_0xADDRESS` — adds to Copy Trade
+
+## Step 4 — Start Monitoring
+
+Hit **▶ Start Monitoring** from the main menu. The terminal immediately begins scanning every 30 seconds.
+
+```
+/monitor
+```
+
+<Check>
+  You're live. Signals will arrive within the next monitoring cycle. Each signal includes an AI Score (1–100), visual bar, and one-tap trade entry.
+</Check>
+
+## Step 5 — Act on Signals
+
+Every signal notification includes:
+
+| Button | Action |
+|--------|--------|
+| **Enter Trade** | Pre-filled trade entry — review and confirm |
+| **Skip** | Dismiss without action |
+| **Add to Watchlist** | Track price without trading |
+| **View Market** | Open market detail screen |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card icon="bolt" href="/docs/core/signal-detection" title="All 8 Patterns">
+    Deep dive into every detection pattern and when each fires.
+  </Card>
+  <Card icon="star" href="/docs/core/signal-scoring" title="Signal Scores">
+    Learn how the 1–100 composite score is calculated.
+  </Card>
+</CardGroup>

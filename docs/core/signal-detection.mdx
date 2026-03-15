@@ -1,0 +1,143 @@
+---
+title: "Signal Detection"
+description: "Eight proprietary pattern detectors that identify structural market inefficiencies on Polymarket."
+---
+
+## Overview
+
+The terminal implements **eight independent pattern detectors**. Each detector runs in parallel every 30 seconds. A maximum of **2 signals per pattern per cycle** are surfaced to avoid notification flooding.
+
+<Note>
+  All detectors only surface markets where `acceptingOrders=true` — live order-book activity is confirmed before any signal fires.
+</Note>
+
+---
+
+## Pattern 1 — 🔀 Intersection
+
+<Badge>Strongest Signal</Badge>
+
+Monitors all followed wallets for trades made within the last **2 hours**. When **2 or more wallets** appear in the same market, an intersection is recorded. The most commonly chosen outcome is surfaced as the signal direction.
+
+**Why it works:** Multiple independent informed traders simultaneously entering the same market signals shared conviction or non-public information.
+
+```
+Trigger: followed_wallets_in_market >= 2, within last 2 hours
+Score contribution: Pattern = 20/20 (maximum)
+```
+
+<Tip>
+  Requires at least 2 followed wallets. Add 5–10 known whale addresses from apeindex.trade for best results.
+</Tip>
+
+---
+
+## Pattern 2 — 📰 Pre-News Trading
+
+Detects markets with abnormally high short-term volume relative to lifetime volume — a reliable indicator of information asymmetry before a news event.
+
+Enriched with **Google News RSS** — fetches related articles published in the last 8 hours and adds context to whether the volume spike is news-driven or potential insider trading.
+
+```
+Trigger: v24h / v_total >= 5%, minimum daily volume $2,000
+```
+
+**Why it works:** A sudden spike in 24h volume as a fraction of total lifetime volume suggests informed traders positioning ahead of an expected announcement.
+
+---
+
+## Pattern 3 — ⚡ Quick Flip
+
+Targets markets where the price is in the **30–70% range** with $5k+ daily volume — maximum uncertainty and high volatility opportunity.
+
+```
+Trigger: Yes price between 0.30 and 0.70, daily volume >= $5,000
+```
+
+**Why it works:** Binary outcomes near 50% are highly sensitive to new information. A small directional edge produces outsized risk/reward.
+
+---
+
+## Pattern 4 — 🎲 Contrarian Plays
+
+Identifies **low-probability outcomes** (5–22%) that remain open and liquid with $10k+ lifetime volume.
+
+```
+Trigger: Yes price 0.05–0.22, lifetime volume >= $10,000
+Potential return: 350–1,900% if resolved Yes
+```
+
+**Why it works:** Thinly-covered markets with real liquidity sometimes misprice tail events. The $10k floor ensures meaningful two-sided activity.
+
+<Warning>
+  Contrarian plays carry higher risk by design. Use Low risk level for this pattern.
+</Warning>
+
+---
+
+## Pattern 5 — 📈 Position Growth
+
+Scans **current open positions** of all followed wallets. Any position worth **≥$500** in an actively tradeable market generates a signal.
+
+```
+Trigger: followed_wallet.open_position >= $500, market.acceptingOrders = true
+```
+
+**Why it works:** Captures steady accumulation that doesn't produce short-term volume spikes. Large quietly-held positions often precede significant moves.
+
+---
+
+## Pattern 6 — 🔁 Position Add-On
+
+Detects when a tracked wallet **adds more than 10%** to an existing position. Notification includes: first entry time (UTC), amount added (+$X), average entry price, and total position size.
+
+```
+Trigger: wallet adds > 10% to existing position
+Score: 19/20 — highest among all patterns (adding = maximum conviction)
+```
+
+**Why it works:** Adding to a position is the strongest possible signal of conviction — the trader already has skin in the game and is doubling down.
+
+---
+
+## Pattern 7 — 🦑 Big Entry
+
+Detects large **single entries** from tracked wallets in the last hour, classified by size:
+
+| Tier | Size | Emoji |
+|------|------|-------|
+| Dolphin | $500 – $2,000 | 🐬 |
+| Shark | $2,000 – $10,000 | 🦈 |
+| Kraken | $10,000+ | 🦑 |
+
+```
+Trigger: single entry from tracked wallet within last 1 hour
+```
+
+**Why it works:** Large, decisive entries from wallets you follow are among the most actionable signals on the platform.
+
+---
+
+## Pattern 8 — 👛 Wallet Follow
+
+Fires **immediately** when any tracked wallet makes a trade within the last 30 minutes — before any other pattern runs its analysis.
+
+```
+Trigger: any tracked wallet trade within last 30 minutes
+```
+
+This is the real-time notification layer — you see the trade as it happens, not after a 30-second analysis cycle.
+
+---
+
+## Exit Alert
+
+A separate system (not a pattern) that monitors your open positions. When a tracked whale **reduces or closes** a position in a market you are also long, an **immediate exit notification** fires with an "Exit" button.
+
+Exit alerts cannot be disabled while monitoring is running — they are always active.
+
+---
+
+## Signal Deduplication
+
+Signals will not re-fire for the same market/pattern combination within **24 hours**, managed via a per-user deduplication dictionary with a 24-hour TTL.

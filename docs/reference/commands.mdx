@@ -1,0 +1,75 @@
+---
+title: Commands Reference
+description: "Complete list of commands and menu options available in the ApeIndex Telegram bot."
+---
+
+## Slash Commands
+
+| Command | Description |
+|---------|-------------|
+| `/start` | Open the main menu |
+| `/monitor` | Start or stop the monitoring session |
+| `/portfolio` | View all open positions with live P&L |
+| `/watchlist` | View and manage your watched markets |
+| `/markets` | Open the market browser |
+| `/wallets` | Manage Follow Wallets (notification-only) |
+| `/settings` | Configure risk, patterns, trading mode |
+| `/digest` | Request an on-demand digest at any time |
+| `/help` | Show command help |
+
+## Deep-Links
+
+Share these links to give others direct access:
+
+| Link | Action |
+|------|--------|
+| `t.me/bot?start=follow_0xADDRESS` | Auto-adds wallet to Follow Wallets |
+| `t.me/bot?start=copy_0xADDRESS` | Auto-adds wallet to Copy Trade |
+| `t.me/bot?start=pat_PATTERN` | Opens a specific signal pattern directly |
+
+## Main Menu Buttons
+
+<CardGroup cols={2}>
+  <Card title="▶ Start Monitoring" icon="play">
+    Activates background monitoring. Signals begin within the next 30-second cycle.
+  </Card>
+  <Card title="⏹ Stop Monitoring" icon="stop">
+    Stops monitoring. No new signals until restarted.
+  </Card>
+  <Card title="📂 Portfolio" icon="folder">
+    Real-time open positions view.
+  </Card>
+  <Card title="👛 Follow Wallets" icon="eye">
+    Add wallet addresses for notification-only tracking.
+  </Card>
+  <Card title="🔁 Copy Trade" icon="copy">
+    Add wallet addresses to automatically mirror.
+  </Card>
+  <Card title="⚙️ Settings" icon="gear">
+    Risk limits, patterns, trading mode, paper/live toggle.
+  </Card>
+  <Card title="📊 Markets" icon="chart-line">
+    Trending, category browse, keyword search with pagination.
+  </Card>
+  <Card title="🎁 Referral" icon="gift">
+    Your unique referral code, invite link, and join count.
+  </Card>
+</CardGroup>
+
+## Signal Notification Buttons
+
+| Button | Action |
+|--------|--------|
+| **Enter Trade** | Pre-filled trade entry |
+| **Skip** | Dismiss without action |
+| **Add to Watchlist** | Track price without trading |
+| **View Market** | Open market detail screen |
+| **Exit** | (Exit Alert only) Close position immediately |
+
+## Trade Confirmation Buttons
+
+| Button | Action |
+|--------|--------|
+| **Confirm** | Execute trade via CLOB API (FOK → GTC) |
+| **Cancel** | Abort without executing |
+| **Change Size** | Adjust amount before confirming |

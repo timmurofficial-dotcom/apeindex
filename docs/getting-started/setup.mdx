@@ -1,0 +1,86 @@
+---
+title: "Setup & Configuration"
+description: "Configure your wallet, trading mode, and risk management settings."
+---
+
+## Connecting Your Wallet
+
+No external setup required. ApeIndex generates a fully functional trading wallet directly inside Telegram — including private key, CLOB API credentials, and a deposit address.
+
+<Steps>
+  <Step title="Create Your Wallet">
+    In the bot, tap **Wallet → Create Wallet**. A new Polygon wallet is generated instantly with all required keys. No browser extension or external app needed.
+  </Step>
+  <Step title="Deposit USDC">
+    The terminal shows your deposit address. Send USDC (Polygon network) to that address. Your balance appears automatically once the transaction confirms.
+  </Step>
+  <Step title="Start Trading">
+    Your wallet is ready. All CLOB API credentials are generated and stored automatically.
+  </Step>
+</Steps>
+
+<Warning>
+  Save your private key shown during wallet creation — it is displayed **only once**. ApeIndex stores it encrypted, but back it up in a safe place.
+</Warning>
+
+## Trading Modes
+
+| Mode | Description |
+|------|-------------|
+| **Paper Trading** | $10,000 virtual balance. Full signal detection and notifications. No real funds. |
+| **Live Trading** | Real USDC on Polygon. FOK orders first, automatic GTC fallback. |
+| **Manual** | Every signal arrives with Enter Trade / Skip buttons. You decide each trade. |
+| **Auto** | Signals matching enabled patterns are executed automatically. Notification sent after each execution. |
+
+Switch modes at any time: `/settings → Trading Mode`
+
+## USDC Withdrawal
+
+Withdraw your USDC balance at any time:
+
+```
+Main Menu → Wallet → Withdraw USDC
+→ Enter destination address
+→ Enter amount (minimum $15)
+→ Confirm
+```
+
+Minimum withdrawal: **$15 USDC**.
+
+## Risk Configuration
+
+Risk settings apply at two levels:
+
+### Global Settings
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| Minimum trade amount | $10 | Smallest amount executed per signal |
+| Maximum trade amount | $100 | Cap on any single trade |
+| Risk level | Medium | Multiplier applied to base sizing |
+
+### Per-Pattern Settings
+
+Each of the 8 patterns can have independent sizing. Configure via `/settings → Per-Pattern Risk`.
+
+### Risk Levels
+
+<CardGroup cols={3}>
+  <Card icon="shield" title="Low">
+    0.5× multiplier. Best for new users, Contrarian, or volatile markets.
+  </Card>
+  <Card icon="arrows-minimize" title="Medium">
+    1.0× multiplier. Balanced — the recommended starting point.
+  </Card>
+  <Card icon="fire" title="High">
+    2.0× multiplier. Use only with patterns you have high confidence in.
+  </Card>
+</CardGroup>
+
+## Referral Program
+
+Share your unique referral link to invite others. Early members receive exclusive bonuses at launch.
+
+```
+Main Menu → Referral → Copy invite link
+```

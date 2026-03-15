@@ -1,0 +1,96 @@
+---
+title: Daily Digests
+description: "Two automated digests — morning performance summary and evening global leaderboard."
+---
+
+## Overview
+
+The terminal sends two automated daily digests to all registered users, regardless of whether monitoring is active.
+
+---
+
+## 🌅 Morning Digest — 09:00
+
+Delivered every morning at 09:00 UTC. Summarises your personal activity from the previous 24 hours.
+
+<CardGroup cols={2}>
+  <Card title="Signal Count" icon="bolt">
+    Total signals fired in the last 24h across all active patterns, plus average score.
+  </Card>
+  <Card title="Top 3 Signals" icon="star">
+    Highest-scoring signals: pattern, market question, score, suggested outcome.
+  </Card>
+  <Card title="Realised P&L" icon="dollar-sign">
+    Total P&L from positions closed via SL/TP or manual exit during the day.
+  </Card>
+  <Card title="Open Positions" icon="folder-open">
+    Count of positions currently open across all markets.
+  </Card>
+</CardGroup>
+
+### Example Morning Digest
+
+```
+🌅 Morning Recap — March 14, 2026
+
+Signals fired: 14  ·  Avg score: 71/100
+
+🏆 Top Signals Yesterday
+1. 🔀 Intersection  ·  "Will Trump sign X by March 5?"  ·  YES  ·  88/100
+2. 📰 Pre-News      ·  "Fed rate decision March 2026?"  ·  YES  ·  81/100
+3. 🦑 Big Entry     ·  "Will BTC close above 95k?"      ·  YES  ·  74/100
+
+💰 Realised P&L: +$47.20
+📂 Open positions: 3
+```
+
+---
+
+## 🌙 Evening Digest — 22:00
+
+Delivered every evening at 22:00 UTC. Shows **global platform statistics** — activity across all users on the platform.
+
+<CardGroup cols={2}>
+  <Card title="🌐 Platform Stats" icon="globe">
+    Total trades made by ALL users today and total volume traded across the platform.
+  </Card>
+  <Card title="🏆 Top 3 Traders" icon="trophy">
+    Today's top performers by P&L with medals 🥇🥈🥉 — wallet address, trade count, volume, P&L.
+  </Card>
+</CardGroup>
+
+### Example Evening Digest
+
+```
+🌙 Evening Recap
+━━━━━━━━━━━━━━━━━━━━
+🌐 Platform stats today
+📊 Total trades: 47
+💵 Total volume: $3,240
+
+🏆 Top 3 traders today
+🥇 0x1a2b...3c4d  —  12 trades
+   💵 Volume: $890  ·  📈 P&L: +$124.50
+
+🥈 0x9f3e...7a12  —  8 trades
+   💵 Volume: $540  ·  📈 P&L: +$87.20
+
+🥉 0xb4c1...2e89  —  5 trades
+   💵 Volume: $320  ·  📈 P&L: +$41.00
+
+Great trading day! See you tomorrow. 🚀
+```
+
+Top traders are displayed by **wallet address** (first 6 chars...last 4 chars). If no wallet is on record, shows `User#ID`.
+
+---
+
+## Quiet Day Handling
+
+If no trades occurred during the day, the evening digest sends:
+```
+Quiet day — no trades today 📊
+See you tomorrow!
+```
+
+No digest is silently skipped.

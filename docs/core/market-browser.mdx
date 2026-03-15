@@ -1,0 +1,54 @@
+---
+title: Watchlist & Market Browser
+description: "Track specific markets and browse Polymarket directly from Telegram."
+---
+
+## Watchlist
+
+Add any market to your personal watchlist:
+
+- **Signal notification** — via the "Add to Watchlist" button
+- **Market detail screen** — via the watchlist toggle
+- **`/watchlist` command** — view and manage all tracked markets
+
+### Price Alerts
+
+The watchlist monitor runs **every 60 seconds**. When a market's Yes price moves more than **10% relative to the price at time of addition**, an alert fires with the old price, new price, and direction.
+
+```
+/watchlist          — View all watched markets
+/watchlist → Remove — Stop watching a market
+```
+
+---
+
+## Market Browser
+
+The `/markets` command opens an inline browser with three entry points:
+
+<CardGroup cols={3}>
+  <Card title="Trending Markets" icon="fire">
+    Top markets by 24h volume. Only acceptingOrders=true markets shown.
+  </Card>
+  <Card title="Category Browse" icon="grid">
+    Geopolitics, Sports, Finance, Crypto, Up/Down, Esports, Weather, Other
+  </Card>
+  <Card title="Keyword Search" icon="magnifying-glass">
+    Free-text search via the Gamma API. Find any market by topic or question.
+  </Card>
+</CardGroup>
+
+### Pagination
+
+Markets lists display **10 markets per page** with **Prev / Next** navigation buttons when more than 10 results are available.
+
+### Market Detail Screen
+
+| Field | Description |
+|-------|-------------|
+| Yes / No prices | Current outcome prices |
+| 24h volume | Trading activity in the last 24 hours |
+| Liquidity depth | Total order book liquidity |
+| Polymarket link | Direct link to polymarket.com |
+| Add to Watchlist | One-tap toggle |
+| Enter Trade | Initiate a trade directly from the detail screen |

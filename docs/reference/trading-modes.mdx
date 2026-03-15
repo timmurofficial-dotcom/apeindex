@@ -1,0 +1,71 @@
+---
+title: Trading Modes
+description: "Paper Trading, Live Trading, Manual Mode, and Auto Mode."
+---
+
+## Paper Trading
+
+Paper trading uses a **$10,000 virtual balance** completely separate from your real funds. Everything works identically to live mode:
+
+- All 8 signal patterns fire and deliver notifications
+- Copy Trade mirrors positions using virtual balance
+- Stop-loss and take-profit execute automatically on paper positions
+- Daily digests include paper P&L
+- Full position history and trade log
+
+**When to use:** Learning the system, testing new patterns, or running parallel strategies risk-free.
+
+```
+/settings → Trading Mode → Paper
+```
+
+## Live Trading
+
+Uses your real Polygon wallet and USDC balance. Order execution:
+
+1. **FOK (Fill-or-Kill)** — attempts immediate full fill
+2. **GTC (Good-Til-Cancelled)** — automatic fallback; polls every 60s
+
+```
+/settings → Trading Mode → Live
+```
+
+---
+
+## Manual Mode (Default)
+
+Every signal is delivered as a Telegram notification with **Enter Trade / Skip** buttons. You decide each trade individually.
+
+- Full control over every execution
+- No automatic spending
+- Best for reviewing signals before acting
+
+## Auto Mode
+
+Signals matching enabled patterns are **executed automatically** without confirmation. A notification is always sent after each execution.
+
+- Hands-free execution — never misses a signal
+- Sizing governed by your risk configuration
+- Enable/disable per pattern independently
+
+<Warning>
+  Before enabling Auto Mode, set your **maximum trade amount** to a value you're comfortable with. The terminal executes all qualifying signals up to that limit.
+</Warning>
+
+## Per-Pattern Auto Execution
+
+In Auto Mode, enable or disable auto-execution independently for each of the 8 patterns:
+
+```
+/settings → Signal Patterns → [Pattern Name] → Auto Execute: On/Off
+```
+
+Example: Intersection signals auto-execute (high confidence) while Contrarian requires manual approval (higher risk).
+
+## Switching Modes
+
+```
+/settings → Trading Mode → Paper / Live / Manual / Auto
+```
+
+Switching modes does not affect already-open positions.
